@@ -49,7 +49,8 @@ public class TransactionController {
     @GetMapping("/transactions/filterByNameCustomer")
     public ResponseEntity<List<Transaction>> filterByNameCustomer(
             @RequestParam(name = "nameCustomer") String nameCustomer) {
-        return new ResponseEntity<List<Transaction>>(transactionService.getTransactionsByNameCustumer(nameCustomer),
+        return new ResponseEntity<List<Transaction>>(
+                transactionService.getTransactionsByNameCustumer(nameCustomer),
                 HttpStatus.OK);
     }
 
@@ -60,6 +61,7 @@ public class TransactionController {
     public ResponseEntity<List<Transaction>> filterByDateRange(
             @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        ValidateDates(startDate, endDate);
         return new ResponseEntity<List<Transaction>>(
                 transactionService.getTransactionsByDateRange(startDate, endDate),
                 HttpStatus.OK);
@@ -84,6 +86,12 @@ public class TransactionController {
         }
         if ("Retiro".equals(transaction.getType()) && transaction.getAmount() <= transaction.getBalance()) {
             transaction.setBalance(transaction.getBalance() - transaction.getAmount());
+        }
+    }
+
+    private void ValidateDates(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
+            throw new ValidationException("La fecha de inicial debe ser menor a la fecha final");
         }
     }
 

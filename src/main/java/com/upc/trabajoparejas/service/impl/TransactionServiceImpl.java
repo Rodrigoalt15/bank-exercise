@@ -28,8 +28,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> getTransactionsByNameCustumer(String nameCustomer) {
-        Account account = accountRepository.findByNameCustomer(nameCustomer);
-        return transactionReposity.findByAccount(account);
+        List<Account> account = accountRepository.findByNameCustomer(nameCustomer);
+        return transactionReposity.findByAccounts(account);
     }
 
     @Override
